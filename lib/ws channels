@@ -1,0 +1,4 @@
+getchats - gets the list of all chats 
+server - send/recieve details to/from server
+onConnect - when the user connects to server
+auth - when the user verifies themselves with uid

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "415821304383",
+    "firebase_url": "https://simplychat-aakash9518.firebaseio.com",
+    "project_id": "simplychat-aakash9518",
+    "storage_bucket": "simplychat-aakash9518.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:415821304383:android:73df29a266609d25f8de8a",
+        "android_client_info": {
+          "package_name": "com.aakash9518.simplychat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "415821304383-2htkn700alehgrs5cu8nmaf37tsl8ntc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aakash9518.simplychat",
+            "certificate_hash": "87ae684093c7e0ba7796b694f30915605ad691b0"
+          }
+        },
+        {
+          "client_id": "415821304383-cdo35iohcfio5a9ule4r9ti293lmjc14.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5u7CwtTmsm7cyOI-Zbz0qM79KLWisuP4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "415821304383-cdo35iohcfio5a9ule4r9ti293lmjc14.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
