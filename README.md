@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # simplychat
 
 A new Flutter project.
@@ -14,3 +15,7 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+=======
+# SimplyChat
+A fully featured flutter based messaging app
+>>>>>>> 25846c37e9d7241ca49cdca8e36f8c76a6c76343
