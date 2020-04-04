@@ -7,8 +7,9 @@ class ChatTile extends StatefulWidget {
   String recentMessage;
   int messageCount;
   String profileUid;
+  String roomId;
   String myUid;
-  ChatTile({this.profileName,this.messageCount,this.profilePic,this.recentMessage,this.profileUid,this.myUid});
+  ChatTile({this.profileName,this.messageCount,this.profilePic,this.recentMessage,this.profileUid,this.myUid,this.roomId});
   @override
   _ChatTileState createState() => _ChatTileState();
 }
@@ -24,6 +25,7 @@ class _ChatTileState extends State<ChatTile> {
         Navigator.push(context, new MaterialPageRoute(builder: (context)=>ChatPage(
           receiverUid: widget.profileUid,
           myUid:widget.myUid ,
+          roomId: widget.roomId,
         ) ));
       },
       trailing: CircleAvatar(child : Text((widget.messageCount?? 0).toString()) )

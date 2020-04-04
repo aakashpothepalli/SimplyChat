@@ -17,10 +17,12 @@ class ChatsPageState  extends State<ChatsPage>{
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   List<String> chats = ["aakash","arun","anas"];
   String myUid;
+
+  
   @override
   void initState() {
     var socket = Provider.of<MyWebsocket>(context,listen: false);
-    socket.send('{"channel":"getChats","uid":"${widget.uid}"}');
+    socket.getChats(widget.uid);//load the chats for the specific uid
     this.myUid  = widget.uid;
     super.initState();
   }
@@ -43,19 +45,24 @@ class ChatsPageState  extends State<ChatsPage>{
         ],
       ),
       body:Consumer<MyWebsocket>(
-        builder: (context,ws ,widget) {
-          if(ws.chatsList.length==0){
+        builder: (context,socket ,widget) {
+          if(socket.chatsList.length==0){
             return Center(child: CircularProgressIndicator());
           }
           else{
             return ListView.builder(
-              itemCount: ws.chatsList.length,
+              itemCount: socket.chatsList.length,
               itemBuilder: (BuildContext context,int index){
+                
+                socket.connect2room(socket.chatsList[index]['roomId'], this.myUid); //connects to all the chat rooms 
+                String roomId =socket.chatsList[index]['roomId'];
                 return ChatTile(
-                  profileName: ws.chatsList[index]['profileName'].toString(),
-                  recentMessage: ws.chatsList[index]['recentMessage'].toString(),
-                  profileUid: ws.chatsList[index]['profileUid'].toString(),
-                  myUid: this.myUid ,);
+                  profileName: socket.chatsList[index]['profileName'].toString(),
+                  recentMessage: socket.latestMessages[roomId].toString(),
+                  profileUid: socket.chatsList[index]['profileUid'].toString(),
+                  myUid: this.myUid ,
+                  roomId:roomId.toString() ,
+                  messageCount: socket.messages[roomId].length,);
               }
             );
           }
