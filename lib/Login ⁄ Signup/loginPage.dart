@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:http/http.dart' as http;
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 import 'package:simplychat/main.dart';
 import 'dart:async';
-import 'dart:math';
-import 'signUpPage.dart';
+
+import '../myWebsocket.dart';
+
 
 class LoginPage extends StatefulWidget {
   @override
@@ -47,7 +48,8 @@ class _LoginPageState extends State<LoginPage> {
       final FirebaseUser user = authResult.user;
 
       print('signed in as ' + user.displayName);
-
+      var socket = Provider.of<MyWebsocket>(context,listen: false);
+      socket.auth(user);
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MyHomePage()));
      
     } catch (err) {

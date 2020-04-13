@@ -124,7 +124,7 @@ class ChatInputToolbar extends StatelessWidget {
 
                     controller.text = "";
 
-                    onTextChange("");
+                    // onTextChange("");
                   }
                 })
               else
@@ -132,22 +132,22 @@ class ChatInputToolbar extends StatelessWidget {
                   icon: Icon(Icons.send),
                   onPressed: alwaysShowSend || text.length != 0
                       ? () async {
-                          if (text.length != 0) {
+                          // if (text.length != 0) {
                             await onSend(message);
 
                             controller.text = "";
 
-                            onTextChange("");
+                            // onTextChange("");
 
-                            Timer(Duration(milliseconds: 300), () {
-                              scrollController.animateTo(
-                                scrollController.position.maxScrollExtent,
-                                curve: Curves.easeOut,
-                                duration: const Duration(milliseconds: 100),
-                              );
-                            });
-                        
-                          }
+                            // Timer(Duration(milliseconds: 300), () {
+                            //   scrollController.animateTo(
+                            //     scrollController.position.maxScrollExtent+50,
+                            //     curve: Curves.easeOut,
+                            //     duration: const Duration(milliseconds: 100),
+                            //   );
+                            // });
+                        scrollController.jumpTo(scrollController.position.maxScrollExtent+50);
+                          // }
                         }
                       : null,
                 ),

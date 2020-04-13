@@ -109,18 +109,20 @@ class _MessageListViewState extends State<MessageListView> {
               alignment: AlignmentDirectional.topCenter,
               children: [
                 ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics (),
                   controller: widget.scrollController,
                   shrinkWrap: true,
                   reverse: widget.inverted,
                   itemCount: widget.messages.length,
                   itemBuilder: (context, i) {
-                        Timer(Duration(milliseconds: 300), () {
-                              widget.scrollController.animateTo(
-                                widget.scrollController.position.maxScrollExtent,
-                                curve: Curves.easeOut,
-                                duration: const Duration(milliseconds: 100),
-                              );
-                            });
+                        // Timer(Duration(milliseconds: 300), () {
+                        //       widget.scrollController.animateTo(
+                        //         widget.scrollController.position.maxScrollExtent,
+                        //         curve: Curves.easeOut,
+                        //         duration: const Duration(milliseconds: 100),
+                        //       );
+                        //     });
+                    // widget.scrollController.jumpTo(widget.scrollController.position.maxScrollExtent);
                         
                     final j = i + 1;
                     bool showAvatar = false;

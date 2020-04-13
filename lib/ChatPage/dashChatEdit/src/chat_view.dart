@@ -371,13 +371,13 @@ class DashChatState extends State<DashChat> {
       builder: (context) => Positioned(
         bottom: height + 12.0,
         right: 10.0,
-        // child: widget.scrollToBottomWidget != null
-        //     ? widget.scrollToBottomWidget()
-        //     : ScrollToBottom(
-        //         onScrollToBottomPress: widget.onScrollToBottomPress,
-        //         scrollController: scrollController,
-        //       ),
-        child: Container(),
+        child: widget.scrollToBottomWidget != null
+            ? widget.scrollToBottomWidget()
+            : ScrollToBottom(
+                onScrollToBottomPress: widget.onScrollToBottomPress,
+                scrollController: scrollController,
+              ),
+        // child: Container(),
       ),
     );
   }
@@ -385,7 +385,7 @@ class DashChatState extends State<DashChat> {
   void widgetBuilt(Duration d) {
     double initPos =
         widget.inverted ? 0.0 : scrollController.position.maxScrollExtent;
-    // scrollController.jumpTo(initPos);
+    scrollController.jumpTo(initPos);
 
     scrollController.addListener(() {
       if (widget.shouldShowLoadEarlier) {
@@ -404,7 +404,7 @@ class DashChatState extends State<DashChat> {
         if (scrollController.offset <=
                 scrollController.position.minScrollExtent &&
             !scrollController.position.outOfRange) {
-          widget.onLoadEarlier();
+          // widget.onLoadEarlier();
         }
       }
     });

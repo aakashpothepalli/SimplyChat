@@ -55,22 +55,24 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
   final FirebaseAuth auth = FirebaseAuth.instance;
   final GoogleSignIn googleSignIn = new GoogleSignIn(scopes: ['email']);
-
+  FirebaseUser user;
   @override
   void initState() {
-    getUser().then((user) {
-      if (user != null) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ChatsPage(uid: user.uid,)));
-      } else {
+    getUser().then((user1) {
+      if (user1 == null) {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
-
+      } 
+      else{
+        print("logged in");
+        setState(() {
+          this.user =user1;
+        });
       }
     });
     // auth.signOut();
-    // googleSignIn.signOut();
+    // googleSignIn.objectsignOut();
     super.initState();
   }
 
@@ -80,9 +82,40 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text('SimplyChat')),
+    if(this.user==null){
+      return Scaffold(
+        body: Text('SimplyChat :)'),
+      );
+    }
+    else return Scaffold(
+
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            expandedHeight: 150.0,
+             title:Text('SimplyChat') ,
+            pinned: true,
+            // flexibleSpace: const FlexibleSpaceBar(
+            //   title: Text('SimplyChat'),
+              
+            // ),
+            actions: <Widget>[
+              IconButton(
+                icon: const Icon(Icons.exit_to_app),
+                tooltip: 'Signout',
+                onPressed: () {
+                  googleSignIn.signOut();
+                  auth.signOut();
+                  Navigator.pushReplacement(context, new MaterialPageRoute(builder: (context)=>LoginPage()));
+                },
+              ),
+             
+            ]
+          ),
+          
+          ChatsPage(uid: this.user.uid,),
+        ],
+      ),
     );
   }
 }

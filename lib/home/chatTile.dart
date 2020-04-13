@@ -24,11 +24,13 @@ class _ChatTileState extends State<ChatTile> {
       onTap: (){
         Navigator.push(context, new MaterialPageRoute(builder: (context)=>ChatPage(
           receiverUid: widget.profileUid,
+          profilePic: widget.profilePic,
+          profileName:widget.profileName,
           myUid:widget.myUid ,
           roomId: widget.roomId,
         ) ));
       },
-      trailing: CircleAvatar(child : Text((widget.messageCount?? 0).toString()) )
+      trailing: CircleAvatar(radius: 13, child : Text((widget.messageCount?? 0).toString()) )
     );
   }
 }

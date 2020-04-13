@@ -1,14 +1,20 @@
+import 'dart:collection';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:simplychat/myWebsocket.dart';
+import 'package:tuple/tuple.dart';
 import 'dashChatEdit/dash_chat.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 class ChatPage extends StatefulWidget {
   final String receiverUid;
   final String roomId;
+  String profilePic;
+  String profileName;
   final myUid;
-  ChatPage({this.receiverUid, this.myUid, this.roomId});
+  ChatPage({this.receiverUid, this.myUid, this.roomId,this.profilePic,this.profileName});
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -16,39 +22,41 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
 
-  List<ChatMessage> messages = [];
-  var myUid;
+    SharedPreferences prefs ;
+    var myUid;
+    var roomId;
+    var uuid = Uuid();
+
+  ScrollController chatViewScrollController = new ScrollController(initialScrollOffset: 0.0);
+  TextEditingController textEditingController = new TextEditingController();
   @override
   void initState() {
     this.myUid = widget.myUid;
+    this.roomId = widget.roomId;
+        var socket = Provider.of<MyWebsocket>(context,listen:false);
+    socket.messagesRead(widget.roomId);
     super.initState();
   }
 
-  onSend(socket,chatMessage) {
-    socket.sendMessage(widget.myUid,widget.roomId,chatMessage.text);
-    this.messages.add(chatMessage);
+  
+  onSend(dynamic) async {
+    var socket = Provider.of<MyWebsocket>(context,listen:false);
 
+    ChatMessage chatMessage = ChatMessage(
+      text: textEditingController.text,
+      user: ChatUser(
+        // avatar: widget.profilePic, //insert my profile pic here
+        uid: widget.myUid),
+      messageIdGenerator: uuid.v4,
+      createdAt: DateTime.now(),
+    );
+    socket.sendMessage(widget.myUid,widget.roomId,chatMessage);
   }
-  onMessageReceived(messageMap){
-      var messagesQueue = messageMap[widget.roomId];
-      
-        while(messagesQueue.length!=0){
-          var userReq = jsonDecode(messagesQueue.first);
-          messagesQueue.removeFirst();
-          print("onMessage RE");
-       
-          print("this message belongs to "+widget.roomId);
-          this.messages.add(  
-            ChatMessage(
-              text: userReq['message'],
-              user:ChatUser(
-                name: "Suraj Kumar",
-                uid: userReq['sender'],
-                ),
-            ));
-          }
-        
-      }
+
+  userIsTyping(){
+    var socket = Provider.of<MyWebsocket>(context,listen:false);
+    socket.send('isTyping',this.roomId);
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -56,6 +64,8 @@ class _ChatPageState extends State<ChatPage> {
     // setState(() {
     //   this.messages = this.socket.messages;
     // });
+     
+
     return Scaffold(
         appBar: AppBar(
           title: Row(
@@ -65,13 +75,29 @@ class _ChatPageState extends State<ChatPage> {
               Padding(
                 padding: const EdgeInsets.all(6.0),
                 child: CircleAvatar(
-                    radius: 14,
-                    backgroundImage: NetworkImage("https://avatars3.githubusercontent.com/u/37346450?s=460&v=4")),
+                    radius: 20,
+                    backgroundImage: NetworkImage(widget.profilePic ??"https://www.searchpng.com/wp-content/uploads/2019/02/Deafult-Profile-Pitcher.png")),
               ),
               SizedBox(width: 10,),
-              Text(
-                "Suraj Kumar",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
+              Column(
+                children: <Widget>[
+                  Text(
+                   widget.profileName?? "Loading",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w300),
+                  ),
+                  Selector<MyWebsocket,Map<String,String>>(
+                    
+                    shouldRebuild: (previous, next) => previous == next,
+
+                    selector:(context,socket)=>socket.headerStatus, 
+
+                    builder:(context,headerStatus,widget){
+
+                    return Text(headerStatus[this.roomId],  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w300),);
+                  } ,
+                  
+                  )
+                ],
               ),
             ],
           ),
@@ -79,37 +105,40 @@ class _ChatPageState extends State<ChatPage> {
     
         body: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Consumer<MyWebsocket>(
-            builder: (context,socket ,widget) {
-              onMessageReceived(socket.messages);
 
+          child: Selector <MyWebsocket , Tuple3<Map<String,List<ChatMessage>>,dynamic Function(dynamic),ScrollController>>( 
+            
+            shouldRebuild: (previous, next) => previous.item1.length == next.item1.length,
+
+            selector:(context,socket)=>Tuple3(socket.messages,socket.messagesRead,socket.chatViewScrollController),
+
+            builder: (context,socketTuple ,widget) {
+              
+              //implement tuple111
+       
               return  DashChat(
-                //showUserAvatar: true,
-                
-                messages: this.messages,
+                textController: textEditingController,
+                scrollController: socketTuple.item3,
+                messages: socketTuple.item1[this.roomId],
+                onTextChange:(text)=> userIsTyping(),
+                alwaysShowSend: true,
                 inputMaxLines: 5,
                 showAvatarForEveryMessage: false,
-                onSend: (chatMessage) {
-                  onSend(socket, chatMessage);
-                },
+                onSend: onSend,
                 scrollToBottom: false,   
                 scrollToBottomWidget: (){return Container();},
                 timeFormat: DateFormat.Hm(),
-                //leading: <Widget>[Container(width: 20,)],
                 user: ChatUser(
                     name:"aakash",
                     uid: this.myUid,),
-
-                inputToolbarPadding: EdgeInsets.only(left: 12),
-             
-                
-                //chatFooterBuilder: , //for the 'typing' message
+                inputToolbarPadding: EdgeInsets.only(left: 12),                
                 inputTextStyle: TextStyle(fontSize: 15));
-       
-            }
+            },
+
             )
           )
     );
+    
         }
   }
 
