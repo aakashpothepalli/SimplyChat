@@ -1,2 +1,2 @@
 # SimplyChat
-A fully featured flutter based messaging app
+A complete messaging app built with flutter
