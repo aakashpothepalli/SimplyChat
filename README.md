@@ -1,2 +1,2 @@
 # SimplyChat
-A complete messaging app built with flutter
+A chat application built with flutter using websockets from scratch 
